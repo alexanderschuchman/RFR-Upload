@@ -2,9 +2,24 @@ import openpyxl
 from openpyxl import Workbook
 from openpyxl import load_workbook
 import win32com.client as win32
+from pathlib import Path
+import os
+import re
+import sys
+import shutil
+# import win32com
 
 def sortFile():
-    excel = win32.gencache.EnsureDispatch('Excel.Application')
+    # excel = win32.gencache.EnsureDispatch('Excel.Application')
+    try:
+        excel = win32.gencache.EnsureDispatch('Excel.Application')
+    except AttributeError:
+        MODULE_LIST = [m.__name__ for m in sys.modules.values()]
+        for module in MODULE_LIST:
+            if re.match(r'win32com\.gen_py\..+', module):
+                del sys.modules[module]
+        shutil.rmtree(os.path.join(os.environ.get('LOCALAPPDATA'), 'Temp', 'gen_py'))
+        excel = win32.gencache.EnsureDispatch('Excel.Application')
     try:
         wb = excel.Workbooks("C:/Users/bp_bhagyashree phadn/Downloads/RFR-Upload/samples/RFRSample.xlsx")
     except Exception as e:
@@ -31,7 +46,7 @@ def generateGroups():
     groups = {}
     i = 2
     val = ws1.cell(row = 2, column = 18).value
-    print(ws1.max_row)
+    # print(ws1.max_row)
     while i <= ws1.max_row:
         while ws1.cell(row = i, column = 18).value == val:
             if val not in groups.keys():
@@ -60,5 +75,30 @@ def generateGroups():
     print(groups)
     return groups
 
+def saveExcel(groups):
+    book = Workbook()
+    sheet = book.worksheets[0]
+    col_count = 1
+    for k in groups.keys():
+        sheet.cell(row = 1, column = col_count).value = k
+        count = 2
+        if isinstance(groups[k][0], list):
+            for i in range(0, len(groups[k])):
+                for j in groups[k][i]:
+                    sheet.cell(row = count, column = col_count).value = j
+                    count += 1
+                if i!=len(groups[k])-1:
+                    col_count += 1
+                    sheet.cell(row = 1, column = col_count).value = k
+                    count = 2
+        else:
+            for i in groups[k]:
+                sheet.cell(row = count, column = col_count).value = i
+                count += 1
+        col_count += 1
+    book.save("samples/output.xlsx")
+
+
 sortFile()
 groups = generateGroups()
+saveExcel(groups)
