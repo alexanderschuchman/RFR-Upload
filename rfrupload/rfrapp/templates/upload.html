@@ -1,0 +1,220 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+
+
+    <title>Automated RFR Upload</title>
+</head>
+
+<style>
+    .navbar{
+        background-color: #a80000;
+    }
+
+    .logout{
+        background-color: white;
+    }
+
+    .navbar-header {
+    /* float: left; */
+    /* padding: 15px; */
+    /* text-align: center; */
+    /* width: 100%; */
+    color: #ffffff;
+    font-weight: bold;
+    font-family: 'Open Sans';
+    }
+
+    .navbar-brand{
+        border: 0px;
+    }
+    
+    .container{
+        margin-top: 70px;
+        
+        text-align: center;
+    }
+    p{
+        font-size: 20px;
+        color: #a80000;
+        /* font-weight: bold; */
+    }
+
+    .dwncontainer{
+        margin-top: 20px;
+        /* width: 450px; */
+        /* height: 45px; */
+        /* background-color: #efefef; */
+        /* border-radius: 5px; */
+        padding-left: 0px;
+        padding-right: 0px;
+        
+    }
+
+    .xlsx{
+        float: left;
+        font-size: 15px;
+        color:black;
+        font-weight: 500;
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    input[type="file"], .input-group-prepend{
+        background-color: #efefef !important;
+        height: 45px;
+        /* border: none; */
+    }
+
+    label{
+        float: right;
+        display: flex;
+        flex-direction: column-reverse;
+        font-size: 15px;
+        color:black;
+        font-style: italic;
+        font-weight: 400;
+        height: 45px;
+    }
+
+    .downloadbtn{
+        background-color: #a80000;
+        color: white;
+        height: 45px;
+        width: 450px
+    }
+
+    .browse{
+        background-color: #606060;
+        color: #fff;
+    }
+
+    #filelabel{
+        background-color: #606060;
+        color: #fff;
+        width: auto;
+        height: 45px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-right: 47px;
+        padding-left: 47px;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+    }   
+    #file1, #file2{
+        height: 45px;
+    }
+</style>
+
+<body>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // function getFileData1(myFile){
+        //     var file = myFile.files[0];  
+        //     document.getElementById("file1").value = file.name;
+        // }
+
+        function getFileData2(myFile){
+            var file = myFile.files[0];  
+            document.getElementById("file2").value = file.name;
+        }
+    </script>
+
+
+    <!-- actual code -->
+    <nav class="navbar fixed-top">
+        <form action="/">
+            <button class="bg-transparent navbar-brand">
+                <img src="{% static 'logo.png' %}" width="" height="30" alt="">
+            </button>
+        </form>
+
+        <div class="navbar-header">
+            <a class="navbar-brand"> Automated RFR Upload </a>
+        </div>
+        <form action="logout" method="POST">
+            {% csrf_token %}
+            <button class="btn my-2 my-sm-0 logout" type="submit">Logout</button>
+        </form>
+    </nav>
+
+    <form action="upload" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% for message in messages %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+
+        <div class="container col-md-6">
+            <br><br>
+            <!-- <p>
+                Upload PWS Report
+            </p>
+    
+            <div class ="container dwncontainer">
+                <div class="row no-gutters">
+                    <img class="col-auto" src="{% static 'excel logo.png' %}" height="45px" alt="">
+                    <div class="input-group mb-3 col-md-10">
+                        <input type="text" class="form-control" id="file1" aria-describedby="fileHelp" placeholder=".xlsx only" disabled>
+                        <div class="input-group-append">
+                            <input type="file" name="pwsfile" id="pwsfile" accept=".xlsx" onchange="getFileData1(this);" hidden/>
+                            <label for="pwsfile" id="filelabel">Browse</label>
+                        </div>
+                    </div>
+                </div>
+            </div><br> -->
+    
+            <br>
+            <p>
+                Upload Input File with Corrected RFR
+            </p>
+    
+            <div class ="container dwncontainer">
+                <div class="row no-gutters">
+                    <img class="col-auto" src="{% static 'excel logo.png' %}" height="45px" alt="">
+                    <div class="input-group mb-3 col-md-10">
+                        <input type="text" class="form-control" id="file2" aria-describedby="fileHelp" placeholder=".xlsx only" disabled>
+                        <div class="input-group-append">
+                            <input type="file" name="inputfile" id="inputfile" accept=".xlsx" onchange="getFileData2(this);" hidden required/>
+                            <label for="inputfile" id="filelabel">Browse</label>
+                        </div>
+                    </div>
+                </div>
+            </div><br><br>
+            
+            <button type="submit" class="btn downloadbtn">RFR Upload</button>
+        </div>
+    
+    </form>
+    
+</body>

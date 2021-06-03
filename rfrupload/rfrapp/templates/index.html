@@ -1,0 +1,156 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+
+
+  <title>Automated RFR Upload-Login</title>
+</head>
+
+<style>
+  html {
+    height: 100%;
+  }
+
+  body {
+    position: relative;
+    /* width: 1000px; */
+    height: 100%;
+    background: linear-gradient(180deg, #E96B6B 0%, #A80000 100%);
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .box {
+    position: absolute;
+    width: 400px;
+    height: 450px;
+    left: 50%;
+    top: 50%;
+    margin-left: -200px;
+    /* -1/2 width */
+    margin-top: -225px;
+    /* -1/2 height */
+    background: #FFFFFF;
+    border-radius: 15px;
+    text-align: center;
+  }
+
+  #title {
+    margin-top: 45px;
+    font-family: 'Open Sans';
+    font-style: normal;
+    font-weight: bold;
+    font-size: 25px;
+    color: #000000;
+    margin-bottom: 75px;
+  }
+
+  #login {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 15px;
+    color: #000000;
+  }
+
+  input[type="text"],
+  input[type="password"],
+  .input-group-text {
+    background-color: #efefef !important;
+    font-size: 15px;
+  }
+
+  .svg {
+    height: 18px;
+  }
+
+  .btn {
+    background-color: #A80000 !important;
+    color: #ffffff;
+  }
+
+  .navbar-brand{
+        border: 0px;
+    }
+
+</style>
+
+<body>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+
+  <!-- actual code -->
+  <nav class="navbar fixed-top">
+    <form action="/">
+      <button class="bg-transparent navbar-brand">
+          <img src="{% static 'logo.png' %}" width="" height="30" alt="">
+      </button>
+  </form>
+  </nav>
+
+  <div class="container col-md-4 col-sm-6 col-xs-8 box">
+    <p id="title">Automated RFR Upload</p>
+    <p id="#login">Login to continue</p><br>
+
+    <form class="col-md-10 mx-auto" action="" method="POST">
+
+      {% csrf_token %}
+
+      {% for message in messages %}
+      <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{message}}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      {% endfor %}
+
+      <div class="form-group input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <img src="{% static 'person.svg' %}" alt="" class="svg">
+          </div>
+        </div>
+        <input type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+          placeholder="Username" name="username" required>
+      </div>
+      <div class="form-group input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">
+            <img src="{% static 'lock.svg' %}" alt="" class="svg">
+          </div>
+        </div>
+        <input type="password" class="form-control" id="exampleInputPassword1"
+        placeholder="Password" name="password" required>
+      </div>
+      <div class="form-group input-group mb-2">
+        <button type="submit" class="btn col-md-12">Submit</button>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>

@@ -1,3 +1,4 @@
+from rfrupload.settings import BASE_DIR
 import openpyxl
 from openpyxl import Workbook
 from openpyxl import load_workbook
@@ -21,10 +22,10 @@ def sortFile():
         shutil.rmtree(os.path.join(os.environ.get('LOCALAPPDATA'), 'Temp', 'gen_py'))
         excel = win32.gencache.EnsureDispatch('Excel.Application')
     try:
-        wb = excel.Workbooks("C:/Users/bp_bhagyashree phadn/Downloads/RFR-Upload/samples/RFRSample.xlsx")
+        wb = excel.Workbooks(os.path.join(BASE_DIR, 'rfrapp/input/input.xlsx'))
     except Exception as e:
         try:
-            wb = excel.Workbooks.Open("C:/Users/bp_bhagyashree phadn/Downloads/RFR-Upload/samples/RFRSample.xlsx")
+            wb = excel.Workbooks.Open(os.path.join(BASE_DIR, 'rfrapp/input/input.xlsx'))
         except Exception as e:
             print(e)
     try:
@@ -34,14 +35,15 @@ def sortFile():
         
         ws.Range('A2:R'+str(LastRow)).Sort(Key1=ws.Range('R1'), Order1=1, Orientation=1)
         
-        wb.SaveAs(Filename="C:\\Users\\bp_bhagyashree phadn\\Downloads\\RFR-Upload\\samples\\sorted.xlsx")
+        wb.SaveAs(Filename=os.path.join(BASE_DIR, 'rfrapp/input/sorted.xlsx'))
         # wb.Save()
+        wb.Close()
         excel.Application.Quit()
     except Exception as e:
         print(e)
 
 def generateGroups():
-    wb1 = load_workbook("samples/sorted.xlsx")
+    wb1 = load_workbook("rfrapp/input/sorted.xlsx")
     ws1 = wb1.worksheets[0]
     groups = {}
     i = 2
@@ -50,11 +52,11 @@ def generateGroups():
     while i <= ws1.max_row:
         while ws1.cell(row = i, column = 18).value == val:
             if val not in groups.keys():
-                groups[val] = [ws1.cell(row = i, column = 3).value]
+                groups[val] = [[ws1.cell(row = i, column = 14).value, ws1.cell(row = i, column = 3).value]]
                 # print(groups)
                 # print(i)
             elif ws1.cell(row = i, column = 3).value not in groups[val]:
-                groups[val].append(ws1.cell(row = i, column = 3).value)
+                groups[val].append([ws1.cell(row = i, column = 14).value, ws1.cell(row = i, column = 3).value])
                 # print(groups)
                 # print(i)
             i += 1
@@ -72,7 +74,8 @@ def generateGroups():
                 excess = groups[k][-1][200:]
                 groups[k][-1] = groups[k][-1][:200]
                 groups[k].append(excess)
-    print(groups)
+    # print(groups)
+    os.remove(os.path.join(BASE_DIR, 'rfrapp/input/sorted.xlsx'))
     return groups
 
 def saveExcel(groups):
@@ -96,9 +99,9 @@ def saveExcel(groups):
                 sheet.cell(row = count, column = col_count).value = i
                 count += 1
         col_count += 1
-    book.save("samples/output.xlsx")
+    book.save("rfrapp/input/output.xlsx")
 
 
-sortFile()
-groups = generateGroups()
-saveExcel(groups)
+# sortFile()
+# groups = generateGroups()
+# saveExcel(groups)
