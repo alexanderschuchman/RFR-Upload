@@ -60,9 +60,11 @@ def generateGroups():
                 # print(groups)
                 # print(i)
             i += 1
-        if ws1.cell(row = i, column = 18).value != val:
+            if i==ws1.max_row+1:
+                break
+        if i!=ws1.max_row+1 and ws1.cell(row = i, column = 18).value != val:
             val = ws1.cell(row = i, column = 18).value
-            i += 1
+            # i += 1
     # print(groups)
     # groups['Discontinued/ Obselete'] += groups['Discontinued/ Obselete']
     # groups['Discontinued/ Obselete'] += groups['Discontinued/ Obselete']

@@ -4,21 +4,21 @@ from pyrfc import Connection, ABAPApplicationError, ABAPRuntimeError, LogonError
 def generateInput(groups):
     sales = []
     material = []
-    for k in groups.keys():
-        if isinstance(groups[k][0][0], list):
-            for i in range(len(groups[k])):
-                for j in range(len(groups[k][i])):
-                    sales.append({'LOW':str(groups[k][i][j][0])})
-                    material.append({'LOW':str(groups[k][i][j][1])})
-        else:
-            for i in range(len(groups[k])):
-                sales.append({'LOW':str(groups[k][i][0])})
-                material.append({'LOW':str(groups[k][i][1])})
-    print(sales)
+    if isinstance(groups[0][0], list):
+        for i in range(len(groups)):
+            for j in range(len(groups[i])):
+                sales.append({'LOW':str(groups[i][j][0])})
+                material.append({'LOW':str(groups[i][j][1])})
+    else:
+        for i in range(len(groups)):
+            sales.append({'LOW':str(groups[i][0])})
+            material.append({'LOW':str(groups[i][1])})
+    # print(sales)
     # print(material)
-    return [sales, material]
+    salesorg = [{'LOW':'IN01'} for i in range(len(sales))]
+    return [salesorg, sales, material]
 
-def updateReason(sales, material):
+def updateReason(salesorg, sales, material, reason):
     try:
         conn = Connection(user='INBHP002', ashost='CADapp05.esc.win.colpal.com', sysnr='05', client='321', passwd='Bdp@251299')
         print(conn.alive)
@@ -31,11 +31,6 @@ def updateReason(sales, material):
         {'LOW':'1601032'}, 
         {'LOW':'1608876'},
         # {'LOW':'1107710'}
-        ]
-        salesorg = [
-            {'LOW': 'IN01'}, 
-            {'LOW': 'IN01'}, 
-            # {'LOW': 'MY02'}
         ]
         salestype = [
             {'LOW': 'ZIOR'},
@@ -57,16 +52,19 @@ def updateReason(sales, material):
         'connection': conn,
         'import_args': {
             'IT_SALESORG': salesorg,
-            'IT_SALESTYP': salestype,
-            'IT_ORDR_CRE_DATE': orderdate,
-            'IT_CRDDDATE': crdddate,
-            'IT_SALESDOC': salesm,
-            'IT_MATERIAL': materialm,
-            'ACTUAL_REASON': '33'
+            # 'IT_SALESTYP': salestype,
+            # 'IT_ORDR_CRE_DATE': orderdate,
+            # 'IT_CRDDDATE': crdddate,
+            # 'IT_SALESDOC': salesm,
+            # 'IT_MATERIAL': materialm,
+            'IT_SALESDOC': sales,
+            'IT_MATERIAL': material,
+            # 'ACTUAL_REASON': '33',
+            'ACTUAL_REASON': reason
         }
     }
         result = fm_dict['connection'].call(fm_dict['function_name'], **fm_dict['import_args'])
-        print(result)
+        # print(result)
         conn.close()
 
     except CommunicationError:
