@@ -9,7 +9,7 @@ def logic(self):
     progress_recorder = ProgressRecorder(self)
     print('Started')
     sortFile()
-    progress_recorder.set_progress(1, 3, description="")
+    progress_recorder.set_progress(1, 3, description="Input File Sorted")
     groups = generateGroups()
     # print(groups['Discontinued/ Obselete'])
     # print(groups['Master data issue'])
@@ -26,7 +26,7 @@ def logic(self):
         'Customer cancel Line/Order': 'C1',
         'Pricing does not match PO': 'C4',
         'Customer Rejected CP Price (SPI)': 'C5',
-        'No Stocks Available': '34',
+        # 'No Stocks Available': '34',
         'Customers cannot receive': 'C2',
         'Expired PO (CRRD)': 'C6',
         'RDC Replenishment Delay': 'D3',
@@ -70,14 +70,33 @@ def logic(self):
         'EDI - Wrong UOM': 'Z5',
         'APO-CMI Dummy Sales Order': 'Z6'
     }
-    progress_recorder.set_progress(2, 3, description="")
+    progress_recorder.set_progress(2, 3, description="Input File Fragmented")
+    count = 0
+    failedcount = 0
+    string = ""
     for k in groups.keys():
         res = generateInput(groups[k])
         salesorg = res[0]
         sales = res[1]
         material = res[2]
-        reason = reasons[k]
+        # reason = reasons[k]
+        reason = k
         print(reason)
-        updateReason(salesorg, sales, material, reason)
+        ret = updateReason(salesorg, sales, material, reason)
+        for x in range(len(ret)):
+            if ret[x]['TYPE']=='S':
+                count += 1
+            else:
+                failedcount += 1
+                if ret[x]['MESSAGE_V2'][10]=='0':
+                    mat = ret[x]['MESSAGE_V2'][11:]
+                else:
+                    mat = ret[x]['MESSAGE_V2'][10:]
+                string += ret[x]['MESSAGE_V1'][1:] + " - " + mat + ", "
+    print(string)
+    if string!="":
+        string = "Updated " + str(count) + " records. Failed " + str(failedcount) +" records: " + string[:-2]
+    else:
+        string = "Updated " + str(count) + " records."
     progress_recorder.set_progress(3, 3, description="")
-    return True
+    return string

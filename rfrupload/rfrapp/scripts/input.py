@@ -78,4 +78,4 @@ def updateReason(salesorg, sales, material, reason):
         raise
     finally:
         conn.close()
-    
+    return result['IT_RETURN']

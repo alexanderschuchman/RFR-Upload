@@ -47,23 +47,23 @@ def generateGroups():
     ws1 = wb1.worksheets[0]
     groups = {}
     i = 2
-    val = ws1.cell(row = 2, column = 18).value
+    val = str(ws1.cell(row = 2, column = 18).value)
     # print(ws1.max_row)
     while i <= ws1.max_row:
-        while ws1.cell(row = i, column = 18).value == val:
+        while str(ws1.cell(row = i, column = 18).value) == val:
             if val not in groups.keys():
                 groups[val] = [[ws1.cell(row = i, column = 14).value, ws1.cell(row = i, column = 3).value]]
                 # print(groups)
                 # print(i)
-            elif ws1.cell(row = i, column = 3).value not in groups[val]:
+            elif [ws1.cell(row = i, column = 14).value, ws1.cell(row = i, column = 3).value] not in groups[val]:
                 groups[val].append([ws1.cell(row = i, column = 14).value, ws1.cell(row = i, column = 3).value])
                 # print(groups)
                 # print(i)
             i += 1
             if i==ws1.max_row+1:
                 break
-        if i!=ws1.max_row+1 and ws1.cell(row = i, column = 18).value != val:
-            val = ws1.cell(row = i, column = 18).value
+        if i!=ws1.max_row+1 and str(ws1.cell(row = i, column = 18).value) != val:
+            val = str(ws1.cell(row = i, column = 18).value)
             # i += 1
     # print(groups)
     # groups['Discontinued/ Obselete'] += groups['Discontinued/ Obselete']
