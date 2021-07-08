@@ -20,7 +20,7 @@ def generateInput(groups):
 
 def updateReason(salesorg, sales, material, reason):
     try:
-        conn = Connection(user='INBHP002', ashost='CADapp05.esc.win.colpal.com', sysnr='05', client='321', passwd='Bdp@251299')
+        conn = Connection(user='INBHP002', ashost='CAIapp07.esc.win.colpal.com', sysnr='07', client='321', passwd='Bp@251299')
         print(conn.alive)
         salesm = [
         {'LOW':'101204797'},
@@ -63,6 +63,7 @@ def updateReason(salesorg, sales, material, reason):
             'ACTUAL_REASON': reason
         }
     }
+        print(reason, sales, material)
         result = fm_dict['connection'].call(fm_dict['function_name'], **fm_dict['import_args'])
         # print(result)
         conn.close()
@@ -78,4 +79,5 @@ def updateReason(salesorg, sales, material, reason):
         raise
     finally:
         conn.close()
+    # print(result['IT_RETURN'])
     return result['IT_RETURN']

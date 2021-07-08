@@ -48,7 +48,7 @@ def generateGroups():
     groups = {}
     i = 2
     val = str(ws1.cell(row = 2, column = 18).value)
-    # print(ws1.max_row)
+    print(ws1.max_row)
     while i <= ws1.max_row:
         while str(ws1.cell(row = i, column = 18).value) == val:
             if val not in groups.keys():
@@ -69,13 +69,13 @@ def generateGroups():
     # groups['Discontinued/ Obselete'] += groups['Discontinued/ Obselete']
     # groups['Discontinued/ Obselete'] += groups['Discontinued/ Obselete']
     # groups['Discontinued/ Obselete'] += groups['Discontinued/ Obselete']
-    for k in groups.keys():
-        if len(groups[k])>200:
-            groups[k] = [groups[k][:200], groups[k][200:]]
-            while len(groups[k][-1])>200:
-                excess = groups[k][-1][200:]
-                groups[k][-1] = groups[k][-1][:200]
-                groups[k].append(excess)
+    # for k in groups.keys():
+    #     if len(groups[k])>200:
+    #         groups[k] = [groups[k][:200], groups[k][200:]]
+    #         while len(groups[k][-1])>200:
+    #             excess = groups[k][-1][200:]
+    #             groups[k][-1] = groups[k][-1][:200]
+    #             groups[k].append(excess)
     # print(groups)
     os.remove(os.path.join(BASE_DIR, 'rfrapp/input/sorted.xlsx'))
     return groups

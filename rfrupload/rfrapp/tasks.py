@@ -4,7 +4,7 @@ from celery_progress.backend import ProgressRecorder
 from .scripts.segmentation import sortFile, generateGroups
 from .scripts.input import generateInput, updateReason
 
-@shared_task(bind=True, name="logic", ignore_result=False)
+@shared_task(bind=True, name="rfrlogic", ignore_result=False)
 def logic(self):
     progress_recorder = ProgressRecorder(self)
     print('Started')
@@ -83,16 +83,22 @@ def logic(self):
         reason = k
         print(reason)
         ret = updateReason(salesorg, sales, material, reason)
-        for x in range(len(ret)):
-            if ret[x]['TYPE']=='S':
+        print(ret)
+        if isinstance(ret, list):
+            print(len(ret))
+            for x in range(len(ret)):
+                if ret[x]['TYPE']!='E':
+                    count += 1
+                else:
+                    failedcount += 1
+                    # print(ret[x])
+                    string += ret[x]['MESSAGE_V1'][1:] + " - " + ret[x]['MESSAGE_V2'] + ", "
+        else:
+            if ret['TYPE']!='E':
                 count += 1
             else:
                 failedcount += 1
-                if ret[x]['MESSAGE_V2'][10]=='0':
-                    mat = ret[x]['MESSAGE_V2'][11:]
-                else:
-                    mat = ret[x]['MESSAGE_V2'][10:]
-                string += ret[x]['MESSAGE_V1'][1:] + " - " + mat + ", "
+                string += ret['MESSAGE_V1'][1:] + " - " + ret['MESSAGE_V2'] + ", "
     print(string)
     if string!="":
         string = "Updated " + str(count) + " records. Failed " + str(failedcount) +" records: " + string[:-2]

@@ -19,11 +19,14 @@ def index(request):
 
 def upload(request):
     if request.method=='POST':
-        file1 = request.FILES['inputfile']
-        with open('rfrapp/input/input.xlsx', 'wb+') as destination:
-            for chunk in file1.chunks():
-                destination.write(chunk)
-        return redirect(rfrstatus)
+        if request.FILES['inputfile']==None:
+            return render(request, "upload.html")
+        else:
+            file1 = request.FILES['inputfile']
+            with open('rfrapp/input/input.xlsx', 'wb+') as destination:
+                for chunk in file1.chunks():
+                    destination.write(chunk)
+            return redirect(rfrstatus)
     if request.user.is_authenticated:
         return render(request, "upload.html")
 
