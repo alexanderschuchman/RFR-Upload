@@ -20,7 +20,6 @@ def generateInput(groups):
 
 def updateReason(salesorg, sales, material, reason):
     try:
-        conn = Connection(user='INBHP002', ashost='CAIapp07.esc.win.colpal.com', sysnr='07', client='321', passwd='Bp@251299')
         print(conn.alive)
         salesm = [
         {'LOW':'101204797'},
